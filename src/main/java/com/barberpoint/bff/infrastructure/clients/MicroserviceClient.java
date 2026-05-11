@@ -1,5 +1,6 @@
 package com.barberpoint.bff.infrastructure.clients;
 
+import com.barberpoint.bff.application.ports.out.MicroserviceClientPort;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
@@ -11,7 +12,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Collections;
 
 @Component
-public class MicroserviceClient {
+public class MicroserviceClient implements MicroserviceClientPort {
 
     @Value("${ms.agendamentos.url:http://localhost:8081/api}")
     private String agendamentosUrl;
@@ -28,22 +29,25 @@ public class MicroserviceClient {
         this.restTemplate = restTemplate;
     }
 
-    // ========== AGENDAMENTOS ==========
-
+    @Override
     @CircuitBreaker(name = "agendamentosBreaker", fallbackMethod = "agendamentosFallback")
     @Retry(name = "agendamentosRetry")
     @TimeLimiter(name = "agendamentosLimiter")
     public ResponseEntity<?> getAgendamentos(String clienteId, String barbeiroId, String status) {
         String url = agendamentosUrl + "/agendamentos";
         String params = "";
-        if (clienteId != null && !clienteId.isEmpty())
+        if (clienteId != null && !clienteId.isEmpty()) {
             params += "clienteId=" + clienteId;
-        if (barbeiroId != null && !barbeiroId.isEmpty())
+        }
+        if (barbeiroId != null && !barbeiroId.isEmpty()) {
             params += (params.isEmpty() ? "" : "&") + "barbeiroId=" + barbeiroId;
-        if (status != null && !status.isEmpty())
+        }
+        if (status != null && !status.isEmpty()) {
             params += (params.isEmpty() ? "" : "&") + "status=" + status;
-        if (!params.isEmpty())
+        }
+        if (!params.isEmpty()) {
             url += "?" + params;
+        }
         return restTemplate.getForEntity(url, Object.class);
     }
 
@@ -52,6 +56,7 @@ public class MicroserviceClient {
                 .body(Collections.singletonMap("error", "MS Agendamentos temporariamente indisponível"));
     }
 
+    @Override
     @CircuitBreaker(name = "agendamentoIdBreaker", fallbackMethod = "agendamentoByIdFallback")
     public ResponseEntity<?> getAgendamentoById(String id) {
         String url = agendamentosUrl + "/agendamentos/" + id;
@@ -63,6 +68,7 @@ public class MicroserviceClient {
                 .body(Collections.singletonMap("error", "MS Agendamentos temporariamente indisponível"));
     }
 
+    @Override
     @CircuitBreaker(name = "createAgendamentoBreaker", fallbackMethod = "createAgendamentoFallback")
     public ResponseEntity<?> createAgendamento(String json) {
         String url = agendamentosUrl + "/agendamentos";
@@ -77,6 +83,7 @@ public class MicroserviceClient {
                 .body(Collections.singletonMap("error", "MS Agendamentos temporariamente indisponível"));
     }
 
+    @Override
     @CircuitBreaker(name = "deleteAgendamentoBreaker", fallbackMethod = "deleteAgendamentoFallback")
     public ResponseEntity<?> deleteAgendamento(String id) {
         String url = agendamentosUrl + "/agendamentos/" + id;
@@ -88,8 +95,7 @@ public class MicroserviceClient {
                 .body(Collections.singletonMap("error", "MS Agendamentos temporariamente indisponível"));
     }
 
-    // ========== CLIENTES ==========
-
+    @Override
     @CircuitBreaker(name = "clientesBreaker", fallbackMethod = "clientesFallback")
     public ResponseEntity<?> getClientes() {
         String url = clientesBarbeirosUrl + "/clientes";
@@ -101,6 +107,7 @@ public class MicroserviceClient {
                 .body(Collections.singletonMap("error", "MS Clientes-Barbeiros temporariamente indisponível"));
     }
 
+    @Override
     @CircuitBreaker(name = "clienteBreaker", fallbackMethod = "clienteFallback")
     public ResponseEntity<?> getCliente(Long clienteId) {
         String url = clientesBarbeirosUrl + "/clientes/" + clienteId;
@@ -112,6 +119,7 @@ public class MicroserviceClient {
                 .body(Collections.singletonMap("error", "MS Clientes-Barbeiros temporariamente indisponível"));
     }
 
+    @Override
     @CircuitBreaker(name = "createClienteBreaker", fallbackMethod = "createClienteFallback")
     public ResponseEntity<?> createCliente(String json) {
         String url = clientesBarbeirosUrl + "/clientes";
@@ -126,6 +134,7 @@ public class MicroserviceClient {
                 .body(Collections.singletonMap("error", "MS Clientes-Barbeiros temporariamente indisponível"));
     }
 
+    @Override
     @CircuitBreaker(name = "updateClienteBreaker", fallbackMethod = "updateClienteFallback")
     public ResponseEntity<?> updateCliente(Long id, String json) {
         String url = clientesBarbeirosUrl + "/clientes/" + id;
@@ -140,6 +149,7 @@ public class MicroserviceClient {
                 .body(Collections.singletonMap("error", "MS Clientes-Barbeiros temporariamente indisponível"));
     }
 
+    @Override
     @CircuitBreaker(name = "deleteClienteBreaker", fallbackMethod = "deleteClienteFallback")
     public ResponseEntity<?> deleteCliente(Long id) {
         String url = clientesBarbeirosUrl + "/clientes/" + id;
@@ -151,8 +161,7 @@ public class MicroserviceClient {
                 .body(Collections.singletonMap("error", "MS Clientes-Barbeiros temporariamente indisponível"));
     }
 
-    // ========== BARBEIROS ==========
-
+    @Override
     @CircuitBreaker(name = "barbeirosBreaker", fallbackMethod = "barbeirosFallback")
     public ResponseEntity<?> getBarbeiros() {
         String url = clientesBarbeirosUrl + "/barbeiros";
@@ -164,6 +173,7 @@ public class MicroserviceClient {
                 .body(Collections.singletonMap("error", "MS Barbeiros temporariamente indisponível"));
     }
 
+    @Override
     @CircuitBreaker(name = "createBarbeiroBreaker", fallbackMethod = "createBarbeiroFallback")
     public ResponseEntity<?> createBarbeiro(String json) {
         String url = clientesBarbeirosUrl + "/barbeiros";
@@ -178,6 +188,7 @@ public class MicroserviceClient {
                 .body(Collections.singletonMap("error", "MS Barbeiros temporariamente indisponível"));
     }
 
+    @Override
     @CircuitBreaker(name = "updateBarbeiroBreaker", fallbackMethod = "updateBarbeiroFallback")
     public ResponseEntity<?> updateBarbeiro(Long id, String json) {
         String url = clientesBarbeirosUrl + "/barbeiros/" + id;
@@ -192,6 +203,7 @@ public class MicroserviceClient {
                 .body(Collections.singletonMap("error", "MS Barbeiros temporariamente indisponível"));
     }
 
+    @Override
     @CircuitBreaker(name = "deleteBarbeiroBreaker", fallbackMethod = "deleteBarbeiroFallback")
     public ResponseEntity<?> deleteBarbeiro(Long id) {
         String url = clientesBarbeirosUrl + "/barbeiros/" + id;
@@ -203,8 +215,7 @@ public class MicroserviceClient {
                 .body(Collections.singletonMap("error", "MS Barbeiros temporariamente indisponível"));
     }
 
-    // ========== RELATÓRIO ==========
-
+    @Override
     @CircuitBreaker(name = "relatorioBreaker", fallbackMethod = "relatorioFallback")
     public ResponseEntity<?> gerarRelatorio(String agendamentoId) {
         String url = azureFunctionUrl + "/reports/schedule-report";

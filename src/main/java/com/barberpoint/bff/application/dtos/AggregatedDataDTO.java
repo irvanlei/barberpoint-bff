@@ -5,22 +5,20 @@ import java.util.List;
 public class AggregatedDataDTO {
 
     private Object cliente;
-    private List<?> agendamentos;
-    private List<?> barbeiros;
+    private List<Object> agendamentos;
+    private List<Object> barbeiros;
     private Object relatorio;
 
-    // Constructors
     public AggregatedDataDTO() {
     }
 
-    public AggregatedDataDTO(Object cliente, List<?> agendamentos, List<?> barbeiros, Object relatorio) {
+    public AggregatedDataDTO(Object cliente, List<Object> agendamentos, List<Object> barbeiros, Object relatorio) {
         this.cliente = cliente;
         this.agendamentos = agendamentos;
         this.barbeiros = barbeiros;
         this.relatorio = relatorio;
     }
 
-    // Getters and Setters
     public Object getCliente() {
         return cliente;
     }
@@ -29,19 +27,19 @@ public class AggregatedDataDTO {
         this.cliente = cliente;
     }
 
-    public List<?> getAgendamentos() {
+    public List<Object> getAgendamentos() {
         return agendamentos;
     }
 
-    public void setAgendamentos(List<?> agendamentos) {
+    public void setAgendamentos(List<Object> agendamentos) {
         this.agendamentos = agendamentos;
     }
 
-    public List<?> getBarbeiros() {
+    public List<Object> getBarbeiros() {
         return barbeiros;
     }
 
-    public void setBarbeiros(List<?> barbeiros) {
+    public void setBarbeiros(List<Object> barbeiros) {
         this.barbeiros = barbeiros;
     }
 
