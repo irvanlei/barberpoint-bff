@@ -75,6 +75,23 @@ public class BFFController {
         }
     }
 
+    @GetMapping("/agendamentos/available")
+    public ResponseEntity<?> obterHorariosDisponiveis(
+            @RequestParam String barbeiroId,
+            @RequestParam String date,
+            @RequestParam int duracao) {
+        try {
+            ResponseEntity<?> result = microserviceClient.getAvailableSlots(barbeiroId, date, duracao);
+            return ResponseEntity.status(result.getStatusCode()).body(result.getBody());
+        } catch (HttpStatusCodeException e) {
+            logger.error("Erro ao obter horários disponíveis: {}", e.getMessage(), e);
+            return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
+        } catch (Exception e) {
+            logger.error("Erro ao obter horários disponíveis: {}", e.getMessage(), e);
+            return ResponseEntity.status(500).body("{\"error\": \"Erro ao buscar horários disponíveis\"}");
+        }
+    }
+
     // ========== CLIENTES ==========
 
     @GetMapping("/clientes")

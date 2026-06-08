@@ -52,6 +52,18 @@ public class MicroserviceClient {
                 .body(Collections.singletonMap("error", "MS Agendamentos temporariamente indisponível"));
     }
 
+    @CircuitBreaker(name = "availableSlotsBreaker", fallbackMethod = "availableSlotsFallback")
+    public ResponseEntity<?> getAvailableSlots(String barbeiroId, String date, int duracao) {
+        String url = agendamentosUrl + "/agendamentos/available?barbeiroId=" + barbeiroId + "&date=" + date
+                + "&duracao=" + duracao;
+        return restTemplate.getForEntity(url, Object.class);
+    }
+
+    public ResponseEntity<?> availableSlotsFallback(String barbeiroId, String date, int duracao, Exception ex) {
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body(Collections.singletonMap("error", "MS Agendamentos temporariamente indisponível"));
+    }
+
     @CircuitBreaker(name = "agendamentoIdBreaker", fallbackMethod = "agendamentoByIdFallback")
     public ResponseEntity<?> getAgendamentoById(String id) {
         String url = agendamentosUrl + "/agendamentos/" + id;
