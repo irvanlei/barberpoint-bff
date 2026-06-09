@@ -8,22 +8,16 @@ Backend para Frontend (BFF) que agrega dados de múltiplos microserviços e cons
 
 ```
 src/main/java/com/barberpoint/bff/
-├── api/
-│   └── controllers/       # REST endpoints do BFF
+├── domain/
+│   └── models/            # Modelos de agregação
 ├── application/
-│   ├── usecases/          # Casos de uso de orquestração e agregação
+│   ├── usecases/          # Casos de uso (Agregar dados)
 │   └── dtos/              # DTOs agregados
-└── infrastructure/
-    └── clients/           # HTTP clients para microserviços e Azure Function
+├── infrastructure/
+│   └── clients/           # HTTP clients (MS + Azure Function)
+└── api/
+    └── controllers/       # REST endpoints
 ```
-
-O BFF atua como camada de orquestração entre frontend e múltiplos serviços distribuídos. Ele agrega dados de microserviços de agendamento, clientes/barbeiros e Azure Functions em um único contrato de API.
-
-Padrões aplicados:
-- **Clean Architecture**
-- **Vertical Slice** na organização de código
-- **API Gateway + BFF + Microservice + Database Service + Serverless**
-- **Event-Driven Architecture** para integração de dados e fallback de chamadas
 
 ## Responsabilidades
 
@@ -215,3 +209,6 @@ GET /api/actuator/prometheus
 - Fellipe
 - Nelson
 - Allan
+
+**Mantido por**: BarberPoint Team  
+**Última atualização**: 27 de abril de 2026

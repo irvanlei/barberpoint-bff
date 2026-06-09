@@ -215,6 +215,69 @@ public class MicroserviceClient {
                 .body(Collections.singletonMap("error", "MS Barbeiros temporariamente indisponível"));
     }
 
+    // ========== SERVIÇOS ==========
+
+    @CircuitBreaker(name = "servicosBreaker", fallbackMethod = "servicosFallback")
+    public ResponseEntity<?> getServicos() {
+        String url = clientesBarbeirosUrl + "/servicos";
+        return restTemplate.getForEntity(url, Object.class);
+    }
+
+    public ResponseEntity<?> servicosFallback(Exception ex) {
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body(Collections.singletonMap("error", "MS Serviços temporariamente indisponível"));
+    }
+
+    @CircuitBreaker(name = "servicoBreaker", fallbackMethod = "servicoFallback")
+    public ResponseEntity<?> getServico(Long id) {
+        String url = clientesBarbeirosUrl + "/servicos/" + id;
+        return restTemplate.getForEntity(url, Object.class);
+    }
+
+    public ResponseEntity<?> servicoFallback(Long id, Exception ex) {
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body(Collections.singletonMap("error", "MS Serviços temporariamente indisponível"));
+    }
+
+    @CircuitBreaker(name = "createServicoBreaker", fallbackMethod = "createServicoFallback")
+    public ResponseEntity<?> createServico(String json) {
+        String url = clientesBarbeirosUrl + "/servicos";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<>(json, headers);
+        return restTemplate.postForEntity(url, entity, Object.class);
+    }
+
+    public ResponseEntity<?> createServicoFallback(String json, Exception ex) {
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body(Collections.singletonMap("error", "MS Serviços temporariamente indisponível"));
+    }
+
+    @CircuitBreaker(name = "updateServicoBreaker", fallbackMethod = "updateServicoFallback")
+    public ResponseEntity<?> updateServico(Long id, String json) {
+        String url = clientesBarbeirosUrl + "/servicos/" + id;
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<>(json, headers);
+        return restTemplate.exchange(url, HttpMethod.PUT, entity, Object.class);
+    }
+
+    public ResponseEntity<?> updateServicoFallback(Long id, String json, Exception ex) {
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body(Collections.singletonMap("error", "MS Serviços temporariamente indisponível"));
+    }
+
+    @CircuitBreaker(name = "deleteServicoBreaker", fallbackMethod = "deleteServicoFallback")
+    public ResponseEntity<?> deleteServico(Long id) {
+        String url = clientesBarbeirosUrl + "/servicos/" + id;
+        return restTemplate.exchange(url, HttpMethod.DELETE, null, Object.class);
+    }
+
+    public ResponseEntity<?> deleteServicoFallback(Long id, Exception ex) {
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body(Collections.singletonMap("error", "MS Serviços temporariamente indisponível"));
+    }
+
     // ========== RELATÓRIO ==========
 
     @CircuitBreaker(name = "relatorioBreaker", fallbackMethod = "relatorioFallback")

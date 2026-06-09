@@ -195,6 +195,63 @@ public class BFFController {
         }
     }
 
+    // ========== SERVIÇOS ==========
+
+    @GetMapping("/servicos")
+    public ResponseEntity<?> listarServicos() {
+        try {
+            ResponseEntity<?> result = microserviceClient.getServicos();
+            return ResponseEntity.status(result.getStatusCode()).body(result.getBody());
+        } catch (Exception e) {
+            logger.error("Erro ao listar serviços: {}", e.getMessage(), e);
+            return ResponseEntity.status(500).body("{\"error\": \"Erro ao buscar serviços\"}");
+        }
+    }
+
+    @GetMapping("/servicos/{id}")
+    public ResponseEntity<?> obterServico(@PathVariable Long id) {
+        try {
+            ResponseEntity<?> result = microserviceClient.getServico(id);
+            return ResponseEntity.status(result.getStatusCode()).body(result.getBody());
+        } catch (Exception e) {
+            logger.error("Erro ao obter serviço {}: {}", id, e.getMessage(), e);
+            return ResponseEntity.status(500).body("{\"error\": \"Erro ao buscar serviço\"}");
+        }
+    }
+
+    @PostMapping("/servicos")
+    public ResponseEntity<?> criarServico(@RequestBody String json) {
+        try {
+            ResponseEntity<?> result = microserviceClient.createServico(json);
+            return ResponseEntity.status(result.getStatusCode()).body(result.getBody());
+        } catch (Exception e) {
+            logger.error("Erro ao criar serviço: {}", e.getMessage(), e);
+            return ResponseEntity.status(500).body("{\"error\": \"Erro ao criar serviço\"}");
+        }
+    }
+
+    @PutMapping("/servicos/{id}")
+    public ResponseEntity<?> atualizarServico(@PathVariable Long id, @RequestBody String json) {
+        try {
+            ResponseEntity<?> result = microserviceClient.updateServico(id, json);
+            return ResponseEntity.status(result.getStatusCode()).body(result.getBody());
+        } catch (Exception e) {
+            logger.error("Erro ao atualizar serviço {}: {}", id, e.getMessage(), e);
+            return ResponseEntity.status(500).body("{\"error\": \"Erro ao atualizar serviço\"}");
+        }
+    }
+
+    @DeleteMapping("/servicos/{id}")
+    public ResponseEntity<?> deletarServico(@PathVariable Long id) {
+        try {
+            ResponseEntity<?> result = microserviceClient.deleteServico(id);
+            return ResponseEntity.status(result.getStatusCode()).body(result.getBody());
+        } catch (Exception e) {
+            logger.error("Erro ao deletar serviço {}: {}", id, e.getMessage(), e);
+            return ResponseEntity.status(500).body("{\"error\": \"Erro ao deletar serviço\"}");
+        }
+    }
+
     // ========== DADOS AGREGADOS ==========
 
     @GetMapping("/aggregated-data")
